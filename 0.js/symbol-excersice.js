@@ -83,3 +83,5 @@ anotherBook[Symbol.asyncIterator] = async function* () {
     console.log(entry);
   }
 })();
+
+console.log("ALL DONE");
