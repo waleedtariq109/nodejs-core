@@ -8,14 +8,6 @@ const fileWatcher = async () => {
 
   const { CREATE_FILE, DELETE_FILE, RENAME_FILE, UPDATE_FILE } = commands;
 
-  const getFilePath = (fileContent, command) => {
-    const parts = fileContent
-      .slice(command.length + 1)
-      .trim()
-      .split(" ");
-    return parts[0];
-  };
-
   const createFile = async (filePath) => {
     const absolutePath = path.join(__dirname, filePath);
     try {
@@ -52,23 +44,19 @@ const fileWatcher = async () => {
     const command = buffer.toString("utf-8");
 
     if (command.includes(CREATE_FILE)) {
-      const filepath = getFilePath(command, CREATE_FILE);
+      const filepath = command.substring(CREATE_FILE.length + 1);
       createFile(filepath);
     }
     if (command.includes(DELETE_FILE)) {
-      const filePath = getFilePath(command, DELETE_FILE);
+      const filePath = command.substring(CREATE_FILE.length + 1);
       deleteFile(filePath);
     }
     if (command.includes(RENAME_FILE)) {
-      const filePath = getFilePath(command, RENAME_FILE);
+      const filePath = command.substring(CREATE_FILE.length + 1);
       renameFile(filePath);
     }
     if (command.includes(UPDATE_FILE)) {
-      console.log("UPDATE");
-
-      const filePath = getFilePath(command, UPDATE_FILE);
-      console.log(filePath, "path");
-
+      const filePath = command.substring(CREATE_FILE.length + 1);
       updateFile(filePath, command);
     }
   });
