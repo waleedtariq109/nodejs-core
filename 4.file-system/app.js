@@ -25,7 +25,7 @@ const fileWatcher = async () => {
 
   const renameFile = async (filePath) => {};
 
-  const updateFile = async (filePath, fileContent) => {};
+  const updateFile = async (filePath) => {};
 
   commandFileHandler.on("change", async () => {
     /**
@@ -57,7 +57,7 @@ const fileWatcher = async () => {
     }
     if (command.includes(UPDATE_FILE)) {
       const filePath = command.substring(CREATE_FILE.length + 1);
-      updateFile(filePath, command);
+      updateFile(filePath);
     }
   });
 
