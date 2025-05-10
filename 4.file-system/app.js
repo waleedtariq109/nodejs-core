@@ -21,11 +21,59 @@ const fileWatcher = async () => {
     }
   };
 
-  const deleteFile = async (filePath) => {};
+  const deleteFile = async (filePath) => {
+    try {
+      const absolutePath = path.join(__dirname, filePath);
+      await fs.unlink(absolutePath);
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        console.log(
+          `The file you are trying to delete are not exist since no need to perform delete operation`
+        );
+      } else {
+        console.log("Something went wrong");
+        console.log(error);
+      }
+    }
+  };
 
-  const renameFile = async (filePath) => {};
+  let addedContent;
+  const updateFile = async (filePath, content) => {
+    try {
+      if (addedContent === content) return;
 
-  const updateFile = async (filePath) => {};
+      const absolutePath = path.join(__dirname, filePath);
+      const fileHandle = await fs.open(absolutePath, "r+");
+      fileHandle.write(content);
+      addedContent = content;
+      fileHandle.close();
+      console.log(`File updated successfully`);
+    } catch (error) {
+      console.log(`
+        The file you are trying to update is not exist.
+        Use this to create a file: 'wt create -f <filename>'
+      `);
+    }
+  };
+
+  const renameFile = async (oldFilePath, newfilePath) => {
+    try {
+      const oldAbsolutePath = path.join(__dirname, oldFilePath);
+      const newAbsolutePath = path.join(__dirname, newfilePath);
+      await fs.rename(oldAbsolutePath, newAbsolutePath);
+      console.log(`File renamed successfully.`);
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        console.log(`
+          The file you are trying to rename is not exist.
+          Use this to create a file: 'wt create -f <filename>'
+        `);
+      } else {
+        console.log("Something went wrong");
+        console.log(error);
+      }
+    }
+  };
 
   commandFileHandler.on("change", async () => {
     /**
@@ -52,12 +100,18 @@ const fileWatcher = async () => {
       deleteFile(filePath);
     }
     if (command.includes(RENAME_FILE)) {
-      const filePath = command.substring(CREATE_FILE.length + 1);
-      renameFile(filePath);
+      const _idx = command.indexOf(" to ");
+      const oldFilePath = command.substring(CREATE_FILE.length + 1, _idx);
+      const newfilePath = command.substring(_idx + 4);
+      renameFile(oldFilePath, newfilePath);
     }
+
     if (command.includes(UPDATE_FILE)) {
-      const filePath = command.substring(CREATE_FILE.length + 1);
-      updateFile(filePath);
+      const _idx = command.indexOf(" this content ");
+      const filePath = command.substring(CREATE_FILE.length + 1, _idx);
+      const content = command.substring(_idx + 14);
+
+      updateFile(filePath, content);
     }
   });
 
