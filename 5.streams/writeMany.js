@@ -1,5 +1,11 @@
 // const fs = require("node:fs/promises");
 
+/**
+ * Execution Time: 1m
+ * CPU usage: 100% (one core)
+ * Memory: 50MB
+ */
+
 // const writeManyHandler = async () => {
 //   console.time("WriteMany");
 //   const fileHandler = await fs.open("./text.txt", "w");
@@ -13,6 +19,12 @@
 // writeManyHandler();
 
 const fs = require("node:fs");
+
+/**
+ * Execution Time: 1.5s
+ * CPU usage: 100% (one core)
+ * Memory: 50MB
+ */
 
 const writeManyHandler = () => {
   console.time("WriteMany");
